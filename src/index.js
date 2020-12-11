@@ -1,17 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Router } from "./Router";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./styles/index.css";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+ReactDOM.render(<Router />, document.getElementById("root"));
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+/* vista 1
+
+caso 1: el admin va a registrar un contrato, simplemente seleccionaria la info ya registrada del cliente y registraria el contrato.abs
+
+caso 2: el admin va a actualizar un contrato, lo busca en el search de arriba, y la info del contrato se desplegaria en el formulario para ser modificada.
+
+caso 3: 
+
+
+
+*/

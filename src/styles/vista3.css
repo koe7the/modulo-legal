@@ -1,0 +1,66 @@
+/*filtro de contratos*/
+
+.div-select {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.select {
+  padding: 12px 12px 12px 12px;
+
+  border: 1.5px solid #dddddd;
+  border-radius: 2.5px;
+
+  background-color: #eeeeee;
+  color: #333333;
+  cursor: pointer;
+}
+
+.select option {
+  background: white;
+}
+
+.select:focus,
+.select:hover {
+  outline: none;
+  border: 1.5px solid #c2c2c2;
+}
+
+/* estilos de la tabla */
+.content-table {
+  border-collapse: collapse;
+  border-radius: 5px 5px 0 0;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.16);
+
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1.5rem;
+  margin-bottom: 4rem;
+
+  overflow: hidden;
+  font-size: 1.1em;
+  min-width: fit-content;
+}
+
+.content-table thead tr {
+  background-color: #b1a595;
+  text-align: left;
+  font-weight: bold;
+}
+
+.content-table th,
+.content-table td {
+  padding: 12px 15px;
+}
+
+.content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.content-table tbody tr:last-of-type {
+  border-bottom: 2px solid #b1a595;
+}
