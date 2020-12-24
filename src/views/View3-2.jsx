@@ -14,7 +14,7 @@ export default function View3_2() {
         id: 1,
         fecha_elaboracion: "10/10/15",
         fecha_expiracion: "8/8/17",
-        tiempo_morosidad: "50 dias",
+        tiempo_morosidad: "91 dias",
       },
     },
     {
@@ -23,7 +23,7 @@ export default function View3_2() {
         id: 2,
         fecha_elaboracion: "10/5/14",
         fecha_expiracion: "8/3/19",
-        tiempo_morosidad: "80 dias",
+        tiempo_morosidad: "91 dias",
       },
     },
   ];
@@ -55,6 +55,7 @@ export default function View3_2() {
             <th>Fecha de expiracion</th>
             <th>Estado de morosidad</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +67,9 @@ export default function View3_2() {
               <td>{contrato.fecha_elaboracion}</td>
               <td>{contrato.fecha_expiracion}</td>
               <td>{contrato.tiempo_morosidad}</td>
+              <td>
+                <button className="boton">Contactar cliente</button>
+              </td>
               <td>
                 <button className="boton">
                   Proceder a embargo de propiedad

@@ -235,6 +235,7 @@ footer {
 
 .content-table td {
   padding: 10px;
+  text-align: center;
 }
 
 .content-table tbody tr {

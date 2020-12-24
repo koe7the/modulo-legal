@@ -4,29 +4,21 @@ import Footer from "../components/Footer";
 import Select from "react-select";
 import { Consulta } from "../components/Consulta";
 export default function View3_1() {
-  const [contrato, setContrato] = useState("");
+  const [options, setOptions] = useState("");
 
   const opciones_contrato = [
     {
       label: "contrato 1",
       value: {
         id: 1,
-        fecha_elaboracion: "10/10/15",
-        fecha_expiracion: "8/8/17",
-        tiempo_morosidad: "50 dias",
-        pagos: 12,
-        porcentaje_credito: 35,
+        permiso: "validado",
       },
     },
     {
       label: "contrato 2",
       value: {
         id: 2,
-        fecha_elaboracion: "10/5/14",
-        fecha_expiracion: "8/3/19",
-        tiempo_morosidad: "80 dias",
-        pagos: 9,
-        porcentaje_credito: 55,
+        permiso: "no validado",
       },
     },
   ];
@@ -42,9 +34,9 @@ export default function View3_1() {
           placeholder="Buscar contrato a refinanciar"
           onChange={(e) => {
             if (e === null) {
-              setContrato("");
+              setOptions("");
             } else if (e.value !== null) {
-              setContrato(e.value);
+              setOptions(e.value);
             }
           }}
         />
@@ -54,28 +46,20 @@ export default function View3_1() {
         <thead>
           <tr>
             <th>Id-Contrato</th>
-            <th>Fecha de elaboracion</th>
-            <th>Fecha de expiracion</th>
-            <th>Estado de morosidad</th>
-            <th>Pago de cuotas puntuales</th>
-            <th>Porcentaje de credito pagado</th>
+            <th>Permiso de refinanciacion</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {contrato === "" ? (
+          {options === "" ? (
             ""
           ) : (
             <tr>
-              <td>{contrato.id}</td>
-              <td>{contrato.fecha_elaboracion}</td>
-              <td>{contrato.fecha_expiracion}</td>
-              <td>{contrato.tiempo_morosidad}</td>
-              <td>{contrato.pagos}</td>
-              <td>{`${contrato.porcentaje_credito}%`}</td>
+              <td>{options.id}</td>
+              <td>{options.permiso}</td>
               <td>
                 <button className="boton">
-                  Proceder a refinanciar contrato
+                  Proceder a registrar nuevo contrato
                 </button>
               </td>
             </tr>
