@@ -4,6 +4,10 @@ import Footer from "../components/Footer";
 import Select from "react-select";
 import { Consulta } from "../components/Consulta";
 
+/* cosas a considerar: 
+  -se prodia agregar un alert solamente cuando la pagina se carge mendiante una nueva pag, en cual se le notifique al usuario que tantos contratos estan en mora legal 
+*/
+
 export default function View3_2() {
   const [contrato, setContrato] = useState("");
 
@@ -54,8 +58,6 @@ export default function View3_2() {
             <th>Fecha de elaboracion</th>
             <th>Fecha de expiracion</th>
             <th>Estado de morosidad</th>
-            <th></th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -67,18 +69,17 @@ export default function View3_2() {
               <td>{contrato.fecha_elaboracion}</td>
               <td>{contrato.fecha_expiracion}</td>
               <td>{contrato.tiempo_morosidad}</td>
-              <td>
-                <button className="boton">Contactar cliente</button>
-              </td>
-              <td>
-                <button className="boton">
-                  Proceder a embargo de propiedad
-                </button>
-              </td>
             </tr>
           )}
         </tbody>
       </table>
+
+      <button className="boton">Contactar cliente</button>
+      <br />
+      <button className="boton">Enviar solicitud de refinanciacion</button>
+      <br />
+      <button className="boton">Proceder a embargo de propiedad</button>
+
       <Consulta />
       <Footer />
     </>

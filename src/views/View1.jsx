@@ -1,46 +1,37 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Select from "react-select";
 import { Consulta } from "../components/Consulta";
+import ContratoForm from "../components/ContratoForm";
+import Select from "react-select";
 import "../styles/vista1.css";
 
+/* cosas a considerar: 
+  -la vista de refinanciamiento cuando se activa el proceso, la vista redirecciona a la vista de actualizacion de contrato con la info del contrato ya cargada para solo cambiar las condiciones de pago del credito renovado, esto se validaria en un useEffect para que identifique si la vista esta siendo cargada mediante un redireccionamiento o una carga normal, y dependiendo de que setearia la data en los estados. 
+  -arreglar el tema de los buscadores de solicitudes y contratos a actualizar para que queden uno al lado del otro OOOOO puedo hacer con dos rabio button seleccionar que mostrar (solicitudes o contratos)
+*/
+
 export default function View1() {
-  /* contrato a mostrar en plantilla */
-  const [contrato, setContrato] = useState("");
   /* informacion del formulario del contrato */
-  const [contratoInfo, setContratoInfo] = useState({
-    modo_contrato: "contado",
-  });
-  /* cliente para el formulario */
-  const [cliente, setCliente] = useState("");
+  const [contratoInfo, setContratoInfo] = useState({});
   /* modo de pago de propiedad */
   const [modo, setModo] = useState("");
   /* mensaje del formulario */
   const [mensaje, setMensaje] = useState("realizar registro");
 
-  const opciones_contrato = [
-    { label: "contrato 1", value: "datos" },
-    { label: "contrato 2", value: "datosssss" },
+  /* TODO: eliminar placeholder de las solicitudes  */
+  const placeholder_solicitud = [
+    { label: "solicitud 1", value: { cliente: "arturo" } },
+    { label: "solicitud 2", value: { cliente: "alex" } },
   ];
 
-  const opciones_cliente = [
-    {
-      label: "cliente 1",
-      value: {
-        nombre: "carlos",
-        apellido: "sanchez",
-      },
-    },
-    {
-      label: "cliente 2",
-      value: {
-        nombre: "manuel",
-        apellido: "perez",
-      },
-    },
+  /* TODO: eliminar placeholder de los contratos */
+  const placeholder_contratos = [
+    { label: "contrato 1", value: { cliente: "arturo" } },
+    { label: "contrato 2", value: { cliente: "alex" } },
   ];
 
+  /* modos de contratacion CREDITO/CONTADO */
   const modos_contrato = [
     {
       label: "Al contado",
@@ -52,6 +43,7 @@ export default function View1() {
     },
   ];
 
+  /* funciones del form */
   const handleChange = (e) => {
     setContratoInfo({
       ...contratoInfo,
@@ -68,308 +60,49 @@ export default function View1() {
   return (
     <>
       <Navbar />
-      {/* select para buscar informacion del cliente a mostrar */}
+      {/* select para buscar informacion de la solicitud confirmada a registrar */}
       <div className="search-select">
         <Select
-          options={opciones_contrato}
+          options={placeholder_solicitud}
           isSearchable
           isClearable
           className="filtro"
-          placeholder="Actualizar/Registrar contrato"
+          placeholder="Buscar solicitud a registrar"
+          onChange={() => {
+            setMensaje("realizar registro");
+          }}
+        />
+      </div>
+      {/* select para seleccionar un contrato a actualizar... esto usa el mismo state que el de registro de solicitud -> contratoInfo */}
+      <div className="search-select">
+        <Select
+          options={placeholder_contratos}
+          isSearchable
+          isClearable
+          className="filtro"
+          placeholder="seleccionar contrato a actualizar"
           onChange={() => {
             setMensaje("realizar actualizacion");
           }}
         />
       </div>
       {/* formulario de contrato */}
-      <div className="form">
-        <h2 className="form-title">Historial de contratos</h2>
-        <form
-          onSubmit={(e) => {
-            handleSubmit(e);
-          }}
-        >
-          {/* select para mostrar la informacion del comprador */}
-          <div className="row">
-            <div className="col-6">
-              <h2 className="form-section">Información del comprador</h2>
-              <div className="form-input">
-                <div className="form-input">
-                  <label htmlFor="cliente">Cliente</label>
-                  <Select
-                    options={opciones_cliente}
-                    id="cliente"
-                    isSearchable
-                    isClearable
-                    className="filtro"
-                    placeholder="Seleccione un usuario"
-                    onChange={(e) => {
-                      if (e === null) {
-                        setCliente("");
-                      } else {
-                        setCliente(e.value);
-                        setContratoInfo({
-                          ...contratoInfo,
-                          cliente: e.value,
-                        });
-                      }
-                    }}
-                  />
-                </div>
-
-                <div className="cliente-output">
-                  <ul>
-                    <li>nombre del cliente: {cliente.nombre}</li>
-                    <li>apellido del cliente: {cliente.apellido}</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            {/* informacion de la propiedad */}
-            <div className="col-6">
-              <h2 className="form-section"> Información de la propiedad</h2>
-              <div className="form-input">
-                <label htmlFor="tipo-inmueble">Tipo de inmueble</label>
-                <input
-                  type="text"
-                  id="tipo-inmueble"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
-              </div>
-              <div className="form-input">
-                <label htmlFor="direccion">Direccion</label>
-                <input
-                  type="text"
-                  id="direccion"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
-              </div>
-              <div className="form-input">
-                <label htmlFor="codigo-postal">Codigo postal</label>
-                <input
-                  type="number"
-                  id="codigo-postal"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
-              </div>
-              <div className="form-input">
-                <label htmlFor="nro-propiedad">Nro de propiedad</label>
-                <input
-                  type="number"
-                  id="nro-propiedad"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-6">
-              <h2 className="form-section">Modalidad de pago</h2>
-              <div className="form-input">
-                <Select
-                  options={modos_contrato}
-                  isClearable
-                  className="filtro"
-                  onChange={(e) => {
-                    if (e === null) {
-                      setModo("");
-                    } else if (e !== null) {
-                      setModo(e.value);
-                      setContratoInfo({
-                        ...contratoInfo,
-                        modo_contrato: e.value,
-                      });
-                    }
-                  }}
-                />
-              </div>
-              {/* inputs de a contado o credito */}
-              {modo === "credito" ? (
-                <div>
-                  <div className="form-input">
-                    <label htmlFor="">Monto de credito</label>
-                    <input
-                      type="number"
-                      name="monto_credito_numerico"
-                      placeholder="monto numerico"
-                      onChange={(e) => {
-                        handleChange(e);
-                      }}
-                    />
-                    <input
-                      style={{ marginTop: "1rem" }}
-                      type="text"
-                      name="monto_credito_texto"
-                      placeholder="monto en texto"
-                      onChange={(e) => {
-                        handleChange(e);
-                      }}
-                    />
-                  </div>
-
-                  <div className="form-input">
-                    <label htmlFor="">Cantidad de cuotas</label>
-                    <input
-                      type="number"
-                      placeholder="cantidad en numeros"
-                      name="cantidad_cuotas"
-                      onChange={(e) => {
-                        handleChange(e);
-                      }}
-                    />
-                  </div>
-                  <div className="form-input">
-                    <label htmlFor="">Tasa de interes</label>
-                    <input
-                      type="number"
-                      placeholder="tasa en numeros"
-                      name="tasa_interes"
-                      onChange={(e) => {
-                        handleChange(e);
-                      }}
-                    />
-                  </div>
-                  <div className="form-input">
-                    <label htmlFor="">Monto de cuotas</label>
-                    <input
-                      type="number"
-                      placeholder="monto numerico"
-                      name="monto_cuotas"
-                      onChange={(e) => {
-                        handleChange(e);
-                      }}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="form-input">
-                  <label htmlFor="">Monto</label>
-                  <input
-                    type="number"
-                    placeholder="monto numerico"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                  />
-                  <input
-                    style={{ marginTop: "1rem " }}
-                    type="text"
-                    placeholder="monto en texto"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-            {/* informacion legal */}
-            <div className="col-6">
-              <h2 className="form-section">Información legal y clausulas</h2>
-              <div className="form-input">
-                <label htmlFor="derechos-cliente">Derechos de cliente</label>
-                <textarea
-                  cols="45"
-                  rows="5"
-                  id="derechos-cliente"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                ></textarea>
-              </div>
-              <div className="form-input">
-                <label htmlFor="obligaciones-cliente">
-                  Obligaciones de cliente
-                </label>
-                <textarea
-                  cols="45"
-                  rows="5"
-                  id="obligaciones-cliente"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                ></textarea>
-              </div>
-
-              <div className="form-input">
-                <label htmlFor="derechos-empresa">Derechos Empresariales</label>
-                <textarea
-                  cols="45"
-                  rows="5"
-                  type="text"
-                  id="derechos-empresa"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
-              </div>
-              <div className="form-input">
-                <label htmlFor="obligaciones-empresa">
-                  Obligaciones Empresariales
-                </label>
-                <textarea
-                  cols="45"
-                  rows="5"
-                  type="text"
-                  id="obligaciones-empresa"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
-              </div>
-
-              <div className="form-input">
-                <label htmlFor="clausulas">Clausulas</label>
-                <textarea
-                  cols="45"
-                  rows="5"
-                  id="clausulas"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                ></textarea>
-              </div>
-              <div className="form-input">
-                <label htmlFor="fecha-entrega">Fecha de entrega</label>
-                <input
-                  type="date"
-                  id="fecha-entrega"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
-              </div>
-              <div className="form-input">
-                <label htmlFor="condiciones-entrega-propiedad">
-                  Condiciones de entrega de la propiedad
-                </label>
-                <textarea
-                  cols="45"
-                  rows="5"
-                  id="condiciones-entrega-propiedad"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                ></textarea>
-              </div>
-            </div>
-          </div>
-          <button
-            style={{ marginTop: "1rem", fontSize: "1.3rem" }}
-            type="submit"
-            className="boton"
-          >
-            {mensaje}
-          </button>
-        </form>
-      </div>
+      <ContratoForm
+        /* state del contrato */
+        contratoInfo={contratoInfo}
+        setContratoInfo={setContratoInfo}
+        modos_contrato={modos_contrato}
+        /* TODO: info del cliente, buscar mejor manera de expresarla  */
+        cliente={placeholder_solicitud[1].value.cliente}
+        /* funciones del form */
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        /* modo de pago del contrato */
+        modo={modo}
+        setModo={setModo}
+        /* mensaje de registro o actualizacion */
+        mensaje={mensaje}
+      />
       <Consulta />
       <Footer />
     </>
