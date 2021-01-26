@@ -6,7 +6,7 @@ import Select from "react-select";
 import "../styles/vista2.css";
 
 export default function View2() {
-  const [contrato, setContrato] = useState("");
+  const [contrato, setContrato] = useState({});
   const opciones_contrato = [
     {
       label: "contrato 1",
@@ -43,7 +43,7 @@ export default function View2() {
           placeholder="Buscar estado de contrato"
           onChange={(e) => {
             if (e === null) {
-              setContrato("");
+              setContrato({});
             } else if (e.value !== null) {
               setContrato(e.value);
             }
@@ -60,38 +60,27 @@ export default function View2() {
             <th>Fecha de expiración</th>
             <th>Modalidad</th>
             <th>estado</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
-          {contrato === "" ? (
-            ""
-          ) : (
-            <tr>
-              <td>{contrato.id}</td>
-              <td>{contrato.cliente}</td>
-              <td>{contrato.fecha_elaboracion}</td>
-              <td>{contrato.fecha_expiracion}</td>
-              <td>{contrato.modalidad}</td>
-              <td>{contrato.estado}</td>
-              <td>
-                <button className="boton">Retractar </button>
-              </td>
-              {/* eliminar no elimina, simplemente deshabilita el contrato a las vistas, pero queda en record */}
-              <td>
-                <button className="boton">Eliminar </button>
-              </td>
-              <td>
-                <button className="boton">Imprimir</button>
-              </td>
-            </tr>
-          )}
+          <tr>
+            <td>{contrato.id}</td>
+            <td>{contrato.cliente}</td>
+            <td>{contrato.fecha_elaboracion}</td>
+            <td>{contrato.fecha_expiracion}</td>
+            <td>{contrato.modalidad}</td>
+            <td>{contrato.estado}</td>
+          </tr>
         </tbody>
       </table>
+
+      <button className="boton">Retractar </button>
+      <br />
+      {/* eliminar no elimina, simplemente deshabilita el contrato a las vistas, pero queda en record */}
+      <button className="boton">Eliminar </button>
+      <br />
+      <button className="boton">Imprimir</button>
+
       <Consulta />
 
       <Footer />

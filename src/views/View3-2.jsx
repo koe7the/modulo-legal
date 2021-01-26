@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Select from "react-select";
@@ -9,7 +9,13 @@ import { Consulta } from "../components/Consulta";
 */
 
 export default function View3_2() {
-  const [contrato, setContrato] = useState("");
+  const [contrato, setContrato] = useState({});
+
+  useEffect(() => {
+    setTimeout(() => {
+      alert("hola soy un alert que te dice cuantos contratos morosos hay");
+    }, 2000);
+  }, []);
 
   const opciones_contrato = [
     {
@@ -43,7 +49,7 @@ export default function View3_2() {
           placeholder="Buscar contrato moroso"
           onChange={(e) => {
             if (e === null) {
-              setContrato("");
+              setContrato({});
             } else if (e.value !== null) {
               setContrato(e.value);
             }
@@ -61,16 +67,12 @@ export default function View3_2() {
           </tr>
         </thead>
         <tbody>
-          {contrato === "" ? (
-            ""
-          ) : (
-            <tr>
-              <td>{contrato.id}</td>
-              <td>{contrato.fecha_elaboracion}</td>
-              <td>{contrato.fecha_expiracion}</td>
-              <td>{contrato.tiempo_morosidad}</td>
-            </tr>
-          )}
+          <tr>
+            <td>{contrato.id}</td>
+            <td>{contrato.fecha_elaboracion}</td>
+            <td>{contrato.fecha_expiracion}</td>
+            <td>{contrato.tiempo_morosidad}</td>
+          </tr>
         </tbody>
       </table>
 

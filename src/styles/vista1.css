@@ -10,7 +10,7 @@
   background-color: rgb(68, 62, 62);
   border-radius: 0.11cm;
 
-  margin-top: 1%;
+  margin-top: 2.5em;
   margin-bottom: 5%;
   margin-left: 8%;
   margin-right: 8%;
@@ -93,7 +93,8 @@ input:hover {
   height: fit-content;
 
   margin-top: 1.5rem;
-  padding: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1rem 0.1rem 1rem;
 
   color: black;
 
@@ -114,11 +115,43 @@ input:hover {
 .filtro {
   color: black;
 
-  padding: 1em;
+  margin-top: 2em;
 
   border-radius: 0.18em;
 }
 
 .filtro:focus {
   outline: none;
+}
+
+/* selector de accion (registrar o actualizar) */
+#accion-selector {
+  text-align: center;
+  margin-top: 1.5em;
+  margin-bottom: -2.2em;
+}
+
+#accion-selector label {
+  display: inline-block;
+  background-color: #ffaf40;
+  border-radius: 0.2em;
+  text-indent: 0;
+  padding: 0.4em;
+  margin: 0.4em;
+  transition: ease 0.3s;
+
+  cursor: pointer;
+}
+
+#accion-selector label:hover {
+  border-radius: 1em;
+}
+
+.filtro2 {
+  color: black;
+
+  margin-top: 2em;
+  margin-bottom: -1.2em;
+
+  border-radius: 0.18em;
 }

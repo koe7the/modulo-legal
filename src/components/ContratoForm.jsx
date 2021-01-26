@@ -7,28 +7,33 @@ function ContratoForm(props) {
     handleSubmit,
     cliente,
     mensaje,
-    modo,
     setContratoInfo,
     contratoInfo,
-    setModo,
     modos_contrato,
   } = props;
   return (
     <div className="form">
       <h2 className="form-title">Historial de contratos</h2>
-      <form
-        onSubmit={(e) => {
-          handleSubmit(e);
-        }}
-      >
+      <form onSubmit={handleSubmit}>
         {/* select para mostrar la informacion del comprador */}
         <div className="row">
+          {/* informacion del cliente */}
           <div className="col-6">
             <h2 className="form-section">Información del comprador</h2>
             <div className="form-input">
               <div className="cliente-output">
                 <ul>
-                  <li>nombre del cliente: {cliente}</li>
+                  <li>Nombres: {cliente}</li>
+                  <li>Apellidos: </li>
+                  <li>Cedula</li>
+                  <li>Fecha de nacimiento:</li>
+                  <li>Direccion fiscal:</li>
+                  <li>Correo electronico:</li>
+                  <li>Numero de contacto:</li>
+                  <li>RIF:</li>
+                  <li>Genero:</li>
+                  <li>Sueldo:</li>
+                  <li>Nro de cuenta bancaria: </li>
                 </ul>
               </div>
             </div>
@@ -79,6 +84,7 @@ function ContratoForm(props) {
           </div>
         </div>
         <div className="row">
+          {/* modalidad de pago */}
           <div className="col-6">
             <h2 className="form-section">Modalidad de pago</h2>
             <div className="form-input">
@@ -88,9 +94,8 @@ function ContratoForm(props) {
                 className="filtro"
                 onChange={(e) => {
                   if (e === null) {
-                    setModo("");
+                    setContratoInfo("contado");
                   } else if (e !== null) {
-                    setModo(e.value);
                     setContratoInfo({
                       ...contratoInfo,
                       modo_contrato: e.value,
@@ -100,7 +105,7 @@ function ContratoForm(props) {
               />
             </div>
             {/* inputs de a contado o credito */}
-            {modo === "credito" ? (
+            {contratoInfo.modo_contrato === "credito" ? (
               <div>
                 <div className="form-input">
                   <label htmlFor="">Monto de credito</label>
@@ -269,6 +274,7 @@ function ContratoForm(props) {
             </div>
           </div>
         </div>
+        {/* boton submit */}
         <button
           style={{ marginTop: "1rem", fontSize: "1.3rem" }}
           type="submit"

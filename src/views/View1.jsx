@@ -2,22 +2,25 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Consulta } from "../components/Consulta";
+/*componentes del view*/
+import Buscador from "../components/BuscadorView1";
 import ContratoForm from "../components/ContratoForm";
-import Select from "react-select";
+
 import "../styles/vista1.css";
 
-/* cosas a considerar: 
-  -la vista de refinanciamiento cuando se activa el proceso, la vista redirecciona a la vista de actualizacion de contrato con la info del contrato ya cargada para solo cambiar las condiciones de pago del credito renovado, esto se validaria en un useEffect para que identifique si la vista esta siendo cargada mediante un redireccionamiento o una carga normal, y dependiendo de que setearia la data en los estados. 
-  -arreglar el tema de los buscadores de solicitudes y contratos a actualizar para que queden uno al lado del otro OOOOO puedo hacer con dos rabio button seleccionar que mostrar (solicitudes o contratos)
+/* cosas a considerar:
+  -la vista de refinanciamiento cuando se activa el proceso, la vista redirecciona a la vista de actualizacion de contrato con la info del contrato ya cargada para solo cambiar las condiciones de pago del credito renovado, esto se validaria en un useEffect para que identifique si la vista esta siendo cargada mediante un redireccionamiento o una carga normal, y dependiendo de que setearia la data en los estados.
 */
 
 export default function View1() {
   /* informacion del formulario del contrato */
-  const [contratoInfo, setContratoInfo] = useState({});
-  /* modo de pago de propiedad */
-  const [modo, setModo] = useState("");
+  const [contratoInfo, setContratoInfo] = useState({
+    modo_contrato: "contado",
+  });
   /* mensaje del formulario */
-  const [mensaje, setMensaje] = useState("realizar registro");
+  const [mensaje, setMensaje] = useState("");
+  //accion del buscador del form
+  const [accionBuscador, setAccionBuscador] = useState("");
 
   /* TODO: eliminar placeholder de las solicitudes  */
   const placeholder_solicitud = [
@@ -31,7 +34,7 @@ export default function View1() {
     { label: "contrato 2", value: { cliente: "alex" } },
   ];
 
-  /* modos de contratacion CREDITO/CONTADO */
+  /* modos de contratacion CREDITO/CONTADO para el react-select del form */
   const modos_contrato = [
     {
       label: "Al contado",
@@ -60,32 +63,15 @@ export default function View1() {
   return (
     <>
       <Navbar />
-      {/* select para buscar informacion de la solicitud confirmada a registrar */}
-      <div className="search-select">
-        <Select
-          options={placeholder_solicitud}
-          isSearchable
-          isClearable
-          className="filtro"
-          placeholder="Buscar solicitud a registrar"
-          onChange={() => {
-            setMensaje("realizar registro");
-          }}
-        />
-      </div>
-      {/* select para seleccionar un contrato a actualizar... esto usa el mismo state que el de registro de solicitud -> contratoInfo */}
-      <div className="search-select">
-        <Select
-          options={placeholder_contratos}
-          isSearchable
-          isClearable
-          className="filtro"
-          placeholder="seleccionar contrato a actualizar"
-          onChange={() => {
-            setMensaje("realizar actualizacion");
-          }}
-        />
-      </div>
+      {/* buscador de contratos o solicitudes */}
+      <Buscador
+        accion={accionBuscador}
+        setAccion={setAccionBuscador}
+        solicitudOpciones={placeholder_solicitud}
+        contratoOpciones={placeholder_contratos}
+        setMensaje={setMensaje}
+      />
+
       {/* formulario de contrato */}
       <ContratoForm
         /* state del contrato */
@@ -97,9 +83,6 @@ export default function View1() {
         /* funciones del form */
         handleChange={handleChange}
         handleSubmit={handleSubmit}
-        /* modo de pago del contrato */
-        modo={modo}
-        setModo={setModo}
         /* mensaje de registro o actualizacion */
         mensaje={mensaje}
       />
