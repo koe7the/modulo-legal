@@ -5,11 +5,11 @@ function ContratoForm(props) {
   const {
     handleChange,
     handleSubmit,
-    cliente,
     mensaje,
     setContratoInfo,
     contratoInfo,
     modos_contrato,
+    cliente,
   } = props;
   return (
     <div className="form">
@@ -23,17 +23,18 @@ function ContratoForm(props) {
             <div className="form-input">
               <div className="cliente-output">
                 <ul>
-                  <li>Nombres: {cliente}</li>
-                  <li>Apellidos: </li>
-                  <li>Cedula</li>
-                  <li>Fecha de nacimiento:</li>
-                  <li>Direccion fiscal:</li>
-                  <li>Correo electronico:</li>
-                  <li>Numero de contacto:</li>
-                  <li>RIF:</li>
-                  <li>Genero:</li>
-                  <li>Sueldo:</li>
-                  <li>Nro de cuenta bancaria: </li>
+                  <li>ID: {cliente.id} </li>
+                  <li>Nombres: {cliente.nombres}</li>
+                  <li>Apellidos: {cliente.apellidos} </li>
+                  <li>Genero: {cliente.genero} </li>
+                  <li>Cedula: {cliente.cedula} </li>
+                  <li>Fecha de nacimiento: {cliente.fecha_nacimiento}</li>
+                  <li>Numero de contacto: {cliente.numero_contacto} </li>
+                  <li>Correo electronico: {cliente.correo_electronico} </li>
+                  <li>RIF: {cliente.rif} </li>
+                  <li>Cuenta bancaria: {cliente.cuenta_bancaria} </li>
+                  <li>Direccion fiscal: {cliente.direccion_fiscal} </li>
+                  <li>Sueldo: {cliente.sueldo} Bfs </li>
                 </ul>
               </div>
             </div>

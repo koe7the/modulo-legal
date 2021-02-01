@@ -1,18 +1,27 @@
+import axios from "axios";
 import React from "react";
 import Select from "react-select";
+import api_ui from "../api_ui";
 
 function BuscadorView1(props) {
   const {
+    accion,
     solicitudOpciones,
     contratoOpciones,
-    setMensaje,
-    accion,
+    contratoInfo,
+    getCliente,
+    getSolicitud_inmueble,
     setAccion,
+    setMensaje,
+    setCliente,
+    setContratoInfo,
   } = props;
 
   const handleOptionChange = (e) => {
     setAccion(e.target.value);
     setMensaje(e.target.nextElementSibling.innerHTML);
+    setCliente({});
+    setContratoInfo({});
   };
 
   return (
@@ -28,7 +37,7 @@ function BuscadorView1(props) {
             value="actualizacion"
           />
           <label className="form-check-label" htmlFor="inlineRadio1">
-            Registrar Solicitud
+            Actualizar contrato
           </label>
         </div>
         <div className="form-check form-check-inline">
@@ -40,7 +49,7 @@ function BuscadorView1(props) {
             value="registro"
           />
           <label className="form-check-label" htmlFor="inlineRadio2">
-            Actualizar contrato
+            Registrar Solicitud
           </label>
         </div>
       </div>
@@ -53,6 +62,26 @@ function BuscadorView1(props) {
             isClearable
             className="filtro2"
             placeholder="Buscar solicitud a registrar"
+            onChange={(e) => {
+              if (e === null) {
+                setCliente({});
+                setContratoInfo({});
+              } else {
+                getCliente(e.value.id_cliente);
+
+                axios
+                  .get(`${api_ui}/inmuebles/${e.value.id_inmueble}`)
+                  .then((result) => {
+                    setContratoInfo({
+                      ...contratoInfo,
+                      ...result.data[0],
+                    });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              }
+            }}
           />
         </div>
       ) : null}
@@ -65,6 +94,15 @@ function BuscadorView1(props) {
             isClearable
             className="filtro2"
             placeholder="seleccionar contrato a actualizar"
+            onChange={(e) => {
+              if (e === null) {
+                setCliente({});
+                setContratoInfo({});
+              } else {
+                getCliente(e.value.id_cliente);
+                getSolicitud_inmueble(e.value.id_solicitud);
+              }
+            }}
           />
         </div>
       ) : null}

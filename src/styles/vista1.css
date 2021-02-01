@@ -145,6 +145,9 @@ input:hover {
 
 #accion-selector label:hover {
   border-radius: 1em;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 .filtro2 {
