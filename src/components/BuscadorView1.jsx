@@ -9,19 +9,15 @@ function BuscadorView1(props) {
     solicitudOpciones,
     contratoOpciones,
     contratoInfo,
-    getCliente,
-    getSolicitud_inmueble,
     setAccion,
     setMensaje,
-    setCliente,
     setContratoInfo,
   } = props;
 
   const handleOptionChange = (e) => {
     setAccion(e.target.value);
     setMensaje(e.target.nextElementSibling.innerHTML);
-    setCliente({});
-    setContratoInfo({});
+    setContratoInfo({ modo_contrato: "contado" });
   };
 
   return (
@@ -64,17 +60,19 @@ function BuscadorView1(props) {
             placeholder="Buscar solicitud a registrar"
             onChange={(e) => {
               if (e === null) {
-                setCliente({});
                 setContratoInfo({});
               } else {
-                getCliente(e.value.id_cliente);
-
                 axios
-                  .get(`${api_ui}/inmuebles/${e.value.id_inmueble}`)
-                  .then((result) => {
+                  .all([
+                    axios.get(`${api_ui}/inmuebles/${e.value.id_inmueble}`),
+                    axios.get(`${api_ui}/clientes/${e.value.id_cliente}`),
+                  ])
+                  .then((resultArr) => {
                     setContratoInfo({
                       ...contratoInfo,
-                      ...result.data[0],
+                      id_solicitud: e.value.id,
+                      inmueble: resultArr[0].data[0],
+                      cliente: resultArr[1].data[0],
                     });
                   })
                   .catch((err) => {
@@ -96,11 +94,35 @@ function BuscadorView1(props) {
             placeholder="seleccionar contrato a actualizar"
             onChange={(e) => {
               if (e === null) {
-                setCliente({});
                 setContratoInfo({});
               } else {
-                getCliente(e.value.id_cliente);
-                getSolicitud_inmueble(e.value.id_solicitud);
+                axios
+                  .get(`${api_ui}/solicitudes/${e.value.id_solicitud}`)
+                  .then((result) => {
+                    axios
+                      .all([
+                        axios.get(
+                          `${api_ui}/inmuebles/${result.data[0].id_inmueble}`
+                        ),
+                        axios.get(
+                          `${api_ui}/clientes/${result.data[0].id_cliente}`
+                        ),
+                      ])
+                      .then((resArr) => {
+                        setContratoInfo({
+                          ...contratoInfo,
+                          cliente: resArr[1].data[0],
+                          inmueble: resArr[0].data[0],
+                          id_solicitud: e.value.id_solicitud,
+                        });
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
               }
             }}
           />

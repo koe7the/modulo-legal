@@ -9,11 +9,13 @@ import Buscador from "../components/BuscadorView1";
 import ContratoForm from "../components/ContratoForm";
 import "../styles/vista1.css";
 
-/* cosas a considerar:
+/* TODO: TODO: TODO: TODO:cosas a considerar:
   -la vista de refinanciamiento cuando se activa el proceso, la vista redirecciona a la vista de actualizacion de contrato con la info del contrato ya cargada para solo cambiar las condiciones de pago del credito renovado, esto se validaria en un useEffect para que identifique si la vista esta siendo cargada mediante un redireccionamiento o una carga normal, y dependiendo de que setearia la data en los estados.
 
 
-  -los datos de la propiedad deberian ser solamente visualizados, ya que estos ya estan previamente cargados con la solicitud.
+  -TODO: falta la funcionalidad de acutualizar, "eliminar", retractar y embargar los contratos. 
+
+  TODO: TODO: TODO: TODO: 
 */
 
 export default function View1() {
@@ -33,49 +35,19 @@ export default function View1() {
     },
   ];
 
+  //seleccionado o no el select de modo de contrato
+  const [seleccionado, setSeleccionado] = useState(false);
+
   /* estado del formulario del contrato */
   const [contratoInfo, setContratoInfo] = useState({
-    modo_contrato: "contado",
+    modo_contrato: {
+      tipo: "contado",
+    },
   });
 
   //opciones de solicitudes y contratos
   const [contratos, setContratos] = useState([]);
   const [solicitudes, setSolicitudes] = useState([]);
-  //informacion del cliente
-  const [cliente, setCliente] = useState({});
-
-  //funciones para obtener la informacion del cliente, inmueble y los contratos y solicitudes
-  const getCliente = (id) => {
-    axios
-      .get(`${api_ui}/clientes/${id}`)
-      .then((result) => {
-        setCliente(result.data[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getSolicitud_inmueble = (id) => {
-    axios
-      .get(`${api_ui}/solicitudes/${id}`)
-      .then((result) => {
-        axios
-          .get(`${api_ui}/inmuebles/${result.data[0].id_inmueble}`)
-          .then((result) => {
-            setContratoInfo({
-              ...contratoInfo,
-              ...result.data[0],
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   const getData_Contratos_Solicitudes = () => {
     axios
@@ -83,20 +55,32 @@ export default function View1() {
         axios.get(`${api_ui}/contratos`),
         axios.get(`${api_ui}/solicitudes`),
       ])
-      .then(async (responseArr) => {
+      .then((responseArr) => {
         //seteando las opciones para el buscador
 
         const [resContratos, resSolicitudes] = responseArr;
 
-        resContratos.data.forEach((contrato) => {
-          let cuerpo = { label: contrato.id, value: contrato };
-          setContratos([...contratos, cuerpo]);
-        });
+        const contratoOpciones = resContratos.data.reduce(
+          (accumulator, contrato) => {
+            const cuerpo = { label: contrato.id, value: contrato };
+            accumulator.push(cuerpo);
+            return accumulator;
+          },
+          []
+        );
 
-        resSolicitudes.data.forEach((solicitud) => {
-          let cuerpo = { label: solicitud.id, value: solicitud };
-          setSolicitudes([...solicitudes, cuerpo]);
-        });
+        setContratos(contratoOpciones);
+
+        const solicitudesOpciones = resSolicitudes.data.reduce(
+          (accumulator, solicitud) => {
+            const cuerpo = { label: solicitud.id, value: solicitud };
+            accumulator.push(cuerpo);
+            return accumulator;
+          },
+          []
+        );
+
+        setSolicitudes(solicitudesOpciones);
       })
       .catch((err) => {
         console.log(err);
@@ -104,16 +88,19 @@ export default function View1() {
   };
 
   /* funciones del form */
-  const handleChange = (e) => {
-    setContratoInfo({
-      ...contratoInfo,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(contratoInfo);
+    axios
+      .post(`${api_ui}/contratos/registro`, contratoInfo)
+      .then((result) => {
+        alert(`contrato ${result.data.insertId} exitosamente registrado`);
+      })
+      .catch((err) => {
+        alert("hubo un error");
+        console.log(err.response);
+      });
   };
 
   useEffect(() => {
@@ -124,38 +111,33 @@ export default function View1() {
   return (
     <>
       <Navbar />
-      {/* buscador de contratos o solicitudes */}
-      <Buscador
+      <Buscador /* buscador de contratos o solicitudes */
         accion={accionBuscador}
         solicitudOpciones={solicitudes}
         contratoOpciones={contratos}
         contratoInfo={contratoInfo}
-        getCliente={getCliente}
-        getSolicitud_inmueble={getSolicitud_inmueble}
         setAccion={setAccionBuscador}
         setMensaje={setMensaje}
         setContratoInfo={setContratoInfo}
-        setCliente={setCliente}
       />
 
-      {/* formulario de contrato */}
-      <ContratoForm
+      <ContratoForm /* formulario de contrato */
         contratoInfo={contratoInfo}
-        setContratoInfo={setContratoInfo}
         modos_contrato={modos_contrato}
-        cliente={cliente}
-        handleChange={handleChange}
+        seleccionado={seleccionado}
+        mensaje={mensaje} /* mensaje de registro o actualizacion */
         handleSubmit={handleSubmit}
-        /* mensaje de registro o actualizacion */
-        mensaje={mensaje}
+        setContratoInfo={setContratoInfo}
+        setSeleccionado={setSeleccionado}
       />
       <button
         onClick={() => {
           console.log(contratoInfo);
         }}
       >
-        PA VER
+        paver
       </button>
+
       <Footer />
     </>
   );

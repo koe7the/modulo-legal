@@ -3,14 +3,38 @@ import Select from "react-select";
 
 function ContratoForm(props) {
   const {
-    handleChange,
-    handleSubmit,
     mensaje,
-    setContratoInfo,
-    contratoInfo,
+    seleccionado,
     modos_contrato,
-    cliente,
+    contratoInfo,
+    setContratoInfo,
+    handleSubmit,
+    setSeleccionado,
   } = props;
+
+  const cliente = contratoInfo.cliente || null;
+  const inmueble = contratoInfo.inmueble || null;
+
+  const handleChangeModo = (e) => {
+    setContratoInfo({
+      ...contratoInfo,
+      modo_contrato: {
+        ...contratoInfo.modo_contrato,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
+
+  const handleChangeLegal = (e) => {
+    setContratoInfo({
+      ...contratoInfo,
+      legal: {
+        ...contratoInfo.legal,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
+
   return (
     <div className="form">
       <h2 className="form-title">Historial de contratos</h2>
@@ -22,20 +46,22 @@ function ContratoForm(props) {
             <h2 className="form-section">Información del comprador</h2>
             <div className="form-input">
               <div className="cliente-output">
-                <ul>
-                  <li>ID: {cliente.id} </li>
-                  <li>Nombres: {cliente.nombres}</li>
-                  <li>Apellidos: {cliente.apellidos} </li>
-                  <li>Genero: {cliente.genero} </li>
-                  <li>Cedula: {cliente.cedula} </li>
-                  <li>Fecha de nacimiento: {cliente.fecha_nacimiento}</li>
-                  <li>Numero de contacto: {cliente.numero_contacto} </li>
-                  <li>Correo electronico: {cliente.correo_electronico} </li>
-                  <li>RIF: {cliente.rif} </li>
-                  <li>Cuenta bancaria: {cliente.cuenta_bancaria} </li>
-                  <li>Direccion fiscal: {cliente.direccion_fiscal} </li>
-                  <li>Sueldo: {cliente.sueldo} Bfs </li>
-                </ul>
+                {cliente !== null ? (
+                  <ul>
+                    <li>ID: {cliente.id} </li>
+                    <li>Nombres: {cliente.nombres}</li>
+                    <li>Apellidos: {cliente.apellidos} </li>
+                    <li>Genero: {cliente.genero} </li>
+                    <li>Cedula: {cliente.cedula} </li>
+                    <li>Fecha de nacimiento: {cliente.fecha_nacimiento}</li>
+                    <li>Numero de contacto: {cliente.numero_contacto} </li>
+                    <li>Correo electronico: {cliente.correo_electronico} </li>
+                    <li>RIF: {cliente.rif} </li>
+                    <li>Cuenta bancaria: {cliente.cuenta_bancaria} </li>
+                    <li>Direccion fiscal: {cliente.direccion_fiscal} </li>
+                    <li>Sueldo: {cliente.sueldo} Bfs </li>
+                  </ul>
+                ) : null}
               </div>
             </div>
           </div>
@@ -43,44 +69,16 @@ function ContratoForm(props) {
           <div className="col-6">
             <h2 className="form-section"> Información de la propiedad</h2>
             <div className="form-input">
-              <label htmlFor="tipo-inmueble">Tipo de inmueble</label>
-              <input
-                type="text"
-                id="tipo-inmueble"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
-              />
-            </div>
-            <div className="form-input">
-              <label htmlFor="direccion">Direccion</label>
-              <input
-                type="text"
-                id="direccion"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
-              />
-            </div>
-            <div className="form-input">
-              <label htmlFor="codigo-postal">Codigo postal</label>
-              <input
-                type="number"
-                id="codigo-postal"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
-              />
-            </div>
-            <div className="form-input">
-              <label htmlFor="nro-propiedad">Nro de propiedad</label>
-              <input
-                type="number"
-                id="nro-propiedad"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
-              />
+              <div className="cliente-output">
+                {inmueble !== null ? (
+                  <ul>
+                    <li>ID propiedad: {inmueble.id}</li>
+                    <li>Direccion: {inmueble.direccion}</li>
+                    <li>Codigo postal: {inmueble.codigo_postal} </li>
+                    <li>Descripcion: {inmueble.descripcion} </li>
+                  </ul>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
@@ -91,96 +89,130 @@ function ContratoForm(props) {
             <div className="form-input">
               <Select
                 options={modos_contrato}
-                isClearable
                 className="filtro"
+                isSearchable={false}
                 onChange={(e) => {
-                  if (e === null) {
-                    setContratoInfo("contado");
-                  } else if (e !== null) {
-                    setContratoInfo({
-                      ...contratoInfo,
-                      modo_contrato: e.value,
-                    });
-                  }
+                  setContratoInfo({
+                    ...contratoInfo,
+                    modo_contrato: {
+                      tipo: e.value,
+                    },
+                  });
+
+                  setSeleccionado(true);
                 }}
               />
             </div>
             {/* inputs de a contado o credito */}
-            {contratoInfo.modo_contrato === "credito" ? (
+            {seleccionado === false ? null : contratoInfo.modo_contrato.tipo ===
+              "contado" ? (
               <div>
                 <div className="form-input">
-                  <label htmlFor="">Monto de credito</label>
+                  <label>Monto inicial</label>
                   <input
                     type="number"
-                    name="monto_credito_numerico"
-                    placeholder="monto numerico"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
+                    placeholder="Monto inicial"
+                    name="monto_inicial"
+                    onChange={handleChangeModo}
                   />
+                </div>
+                <div className="form-input">
+                  <label>Monto total</label>
                   <input
-                    style={{ marginTop: "1rem" }}
+                    type="number"
+                    placeholder="Monto total"
+                    name="monto_total"
+                    onChange={handleChangeModo}
+                  />
+                </div>
+                <div className="form-input">
+                  <label>Modalidad de pago</label>
+                  <input
                     type="text"
-                    name="monto_credito_texto"
-                    placeholder="monto en texto"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                  />
-                </div>
-
-                <div className="form-input">
-                  <label htmlFor="">Cantidad de cuotas</label>
-                  <input
-                    type="number"
-                    placeholder="cantidad en numeros"
-                    name="cantidad_cuotas"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
+                    placeholder="Modalidad de pago"
+                    name="modalidad_pago"
+                    onChange={handleChangeModo}
                   />
                 </div>
                 <div className="form-input">
-                  <label htmlFor="">Tasa de interes</label>
-                  <input
-                    type="number"
-                    placeholder="tasa en numeros"
-                    name="tasa_interes"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
-                  />
+                  <label>Justificaion de pago</label>
+                  <textarea
+                    name="justificacion_pago"
+                    cols="30"
+                    rows="5"
+                    onChange={handleChangeModo}
+                  ></textarea>
                 </div>
                 <div className="form-input">
-                  <label htmlFor="">Monto de cuotas</label>
+                  <label>Tipo de persona</label>
                   <input
-                    type="number"
-                    placeholder="monto numerico"
-                    name="monto_cuotas"
-                    onChange={(e) => {
-                      handleChange(e);
-                    }}
+                    type="text"
+                    placeholder="Tipo de persona"
+                    name="tipo_persona"
+                    onChange={handleChangeModo}
                   />
                 </div>
               </div>
             ) : (
-              <div className="form-input">
-                <label htmlFor="">Monto</label>
-                <input
-                  type="number"
-                  placeholder="monto numerico"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
-                <input
-                  style={{ marginTop: "1rem " }}
-                  type="text"
-                  placeholder="monto en texto"
-                  onChange={(e) => {
-                    handleChange(e);
-                  }}
-                />
+              <div>
+                <div className="form-input">
+                  <label>Cantidad de cuotas </label>
+                  <input
+                    type="number"
+                    placeholder="Cantidad de cuotas"
+                    name="cantidad_cuotas"
+                    onChange={handleChangeModo}
+                  />
+                </div>
+                <div className="form-input">
+                  <label>Monto de cuotas</label>
+                  <input
+                    type="text"
+                    name="monto_cuotas"
+                    placeholder="Monto de cuotas"
+                    onChange={handleChangeModo}
+                  />
+                </div>
+                <div className="form-input">
+                  <label>Tasa de interes</label>
+                  <input
+                    type="number"
+                    placeholder="tasa de interes"
+                    onChange={handleChangeModo}
+                    name="tasa_interes"
+                  />
+                </div>
+                <div className="form-input">
+                  <label>Tipo de persona</label>
+                  <input
+                    type="text"
+                    name="tipo_persona"
+                    onChange={handleChangeModo}
+                    placeholder="tipo de persona"
+                  />
+                </div>
+                <div className="form-input">
+                  <label>Razon social</label>
+                  <textarea
+                    name="razon_social"
+                    cols="30"
+                    rows="5"
+                    onChange={handleChangeModo}
+                  ></textarea>
+                </div>
+                <div className="form-input">
+                  <label>Cantidad otorgada</label>
+                  <input
+                    type="number"
+                    placeholder="Cantidad otorgada"
+                    onChange={handleChangeModo}
+                    name="cantidad_otorgada"
+                  />
+                </div>
+                <div className="form-input">
+                  <label>Plazo</label>
+                  <input type="date" name="plazo" onChange={handleChangeModo} />
+                </div>
               </div>
             )}
           </div>
@@ -188,90 +220,87 @@ function ContratoForm(props) {
           <div className="col-6">
             <h2 className="form-section">Información legal y clausulas</h2>
             <div className="form-input">
-              <label htmlFor="derechos-cliente">Derechos de cliente</label>
+              <label>Direccion fiscal</label>
               <textarea
                 cols="45"
                 rows="5"
-                id="derechos-cliente"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
+                name="direccion_fiscal"
+                onChange={handleChangeLegal}
               ></textarea>
             </div>
             <div className="form-input">
-              <label htmlFor="obligaciones-cliente">
-                Obligaciones de cliente
-              </label>
+              <label>Proposito</label>
               <textarea
                 cols="45"
                 rows="5"
-                id="obligaciones-cliente"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
+                name="proposito"
+                onChange={handleChangeLegal}
+              ></textarea>
+            </div>
+            <div className="form-input">
+              <label>Derechos de cliente</label>
+              <textarea
+                cols="45"
+                rows="5"
+                name="derechos_cliente"
+                onChange={handleChangeLegal}
+              ></textarea>
+            </div>
+            <div className="form-input">
+              <label>Obligaciones de cliente</label>
+              <textarea
+                cols="45"
+                rows="5"
+                name="obligaciones_cliente"
+                onChange={handleChangeLegal}
               ></textarea>
             </div>
 
             <div className="form-input">
-              <label htmlFor="derechos-empresa">Derechos Empresariales</label>
+              <label>Derechos Empresariales</label>
               <textarea
                 cols="45"
                 rows="5"
-                type="text"
-                id="derechos-empresa"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
+                name="derechos_empresa"
+                onChange={handleChangeLegal}
               />
             </div>
             <div className="form-input">
-              <label htmlFor="obligaciones-empresa">
-                Obligaciones Empresariales
-              </label>
+              <label>Obligaciones Empresariales</label>
               <textarea
                 cols="45"
                 rows="5"
-                type="text"
-                id="obligaciones-empresa"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
+                name="obligaciones_empresa"
+                onChange={handleChangeLegal}
               />
             </div>
 
             <div className="form-input">
-              <label htmlFor="clausulas">Clausulas</label>
+              <label>Clausulas</label>
               <textarea
                 cols="45"
                 rows="5"
                 id="clausulas"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
+                name="clausulas"
+                onChange={handleChangeLegal}
               ></textarea>
             </div>
             <div className="form-input">
-              <label htmlFor="fecha-entrega">Fecha de entrega</label>
-              <input
-                type="date"
-                id="fecha-entrega"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
-              />
-            </div>
-            <div className="form-input">
-              <label htmlFor="condiciones-entrega-propiedad">
-                Condiciones de entrega de la propiedad
-              </label>
+              <label>Condicion de la propiedad</label>
               <textarea
                 cols="45"
                 rows="5"
-                id="condiciones-entrega-propiedad"
-                onChange={(e) => {
-                  handleChange(e);
-                }}
+                name="condicion_propiedad"
+                onChange={handleChangeLegal}
               ></textarea>
+            </div>
+            <div className="form-input">
+              <label>Fecha de consignacion</label>
+              <input
+                type="date"
+                name="fecha_consignacion"
+                onChange={handleChangeLegal}
+              />
             </div>
           </div>
         </div>
