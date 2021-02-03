@@ -17,7 +17,48 @@ function BuscadorView1(props) {
   const handleOptionChange = (e) => {
     setAccion(e.target.value);
     setMensaje(e.target.nextElementSibling.innerHTML);
-    setContratoInfo({ modo_contrato: "contado" });
+
+    setContratoInfo({
+      id_solicitud: 0,
+      cliente: {
+        nombres: "",
+        apellidos: "",
+        cedula: 0,
+        correo_electronico: "",
+        cuenta_bancaria: 0,
+        direccion_fiscal: "",
+        fecha_nacimiento: "",
+        genero: "",
+        id: 0,
+        numero_contacto: 0,
+        rif: "",
+        sueldo: 0,
+      },
+      inmueble: {
+        codigo_postal: 0,
+        descripcion: "",
+        direccion: "",
+        id: 0,
+        tipo: "",
+      },
+      legal: {
+        clausulas: "",
+        condicion_propiedad: "",
+        derechos_cliente: "",
+        derechos_empresa: "",
+        direccion_fiscal: "",
+        fecha_consignacion: "",
+        obligaciones_cliente: "",
+        obligaciones_empresa: "",
+        proposito: "",
+      },
+      modo_contrato: {
+        id: 0,
+        id_contrato: 0,
+        tipo: "contado",
+        tipo_persona: "",
+      },
+    });
   };
 
   return (
@@ -60,7 +101,47 @@ function BuscadorView1(props) {
             placeholder="Buscar solicitud a registrar"
             onChange={(e) => {
               if (e === null) {
-                setContratoInfo({});
+                setContratoInfo({
+                  id_solicitud: 0,
+                  cliente: {
+                    nombres: "",
+                    apellidos: "",
+                    cedula: 0,
+                    correo_electronico: "",
+                    cuenta_bancaria: 0,
+                    direccion_fiscal: "",
+                    fecha_nacimiento: "",
+                    genero: "",
+                    id: 0,
+                    numero_contacto: 0,
+                    rif: "",
+                    sueldo: 0,
+                  },
+                  inmueble: {
+                    codigo_postal: 0,
+                    descripcion: "",
+                    direccion: "",
+                    id: 0,
+                    tipo: "",
+                  },
+                  legal: {
+                    clausulas: "",
+                    condicion_propiedad: "",
+                    derechos_cliente: "",
+                    derechos_empresa: "",
+                    direccion_fiscal: "",
+                    fecha_consignacion: "",
+                    obligaciones_cliente: "",
+                    obligaciones_empresa: "",
+                    proposito: "",
+                  },
+                  modo_contrato: {
+                    id: 0,
+                    id_contrato: 0,
+                    tipo: "contado",
+                    tipo_persona: "",
+                  },
+                });
               } else {
                 axios
                   .all([
@@ -94,31 +175,79 @@ function BuscadorView1(props) {
             placeholder="seleccionar contrato a actualizar"
             onChange={(e) => {
               if (e === null) {
-                setContratoInfo({});
+                setContratoInfo({
+                  id_solicitud: 0,
+                  cliente: {
+                    nombres: "",
+                    apellidos: "",
+                    cedula: 0,
+                    correo_electronico: "",
+                    cuenta_bancaria: 0,
+                    direccion_fiscal: "",
+                    fecha_nacimiento: "",
+                    genero: "",
+                    id: 0,
+                    numero_contacto: 0,
+                    rif: "",
+                    sueldo: 0,
+                  },
+                  inmueble: {
+                    codigo_postal: 0,
+                    descripcion: "",
+                    direccion: "",
+                    id: 0,
+                    tipo: "",
+                  },
+                  legal: {
+                    clausulas: "",
+                    condicion_propiedad: "",
+                    derechos_cliente: "",
+                    derechos_empresa: "",
+                    direccion_fiscal: "",
+                    fecha_consignacion: "",
+                    obligaciones_cliente: "",
+                    obligaciones_empresa: "",
+                    proposito: "",
+                  },
+                  modo_contrato: {
+                    id: 0,
+                    id_contrato: 0,
+                    tipo: "contado",
+                    tipo_persona: "",
+                  },
+                });
               } else {
                 axios
-                  .get(`${api_ui}/solicitudes/${e.value.id_solicitud}`)
-                  .then((result) => {
-                    axios
-                      .all([
-                        axios.get(
-                          `${api_ui}/inmuebles/${result.data[0].id_inmueble}`
-                        ),
-                        axios.get(
-                          `${api_ui}/clientes/${result.data[0].id_cliente}`
-                        ),
-                      ])
-                      .then((resArr) => {
-                        setContratoInfo({
-                          ...contratoInfo,
-                          cliente: resArr[1].data[0],
-                          inmueble: resArr[0].data[0],
-                          id_solicitud: e.value.id_solicitud,
-                        });
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                      });
+                  .all([
+                    axios.get(`${api_ui}/inmuebles/${e.value.id_inmueble}`),
+                    axios.get(`${api_ui}/clientes/${e.value.id_cliente}`),
+                    axios.get(
+                      `${api_ui}/contratos/contrato/${e.value.tipo}/${e.value.id}`
+                    ),
+                  ])
+                  .then((resArr) => {
+                    setContratoInfo({
+                      ...contratoInfo,
+                      id: e.value.id,
+                      legal: {
+                        derechos_cliente: e.value.derechos_cliente,
+                        obligaciones_cliente: e.value.obligaciones_cliente,
+                        derechos_empresa: e.value.derechos_empresa,
+                        obligaciones_empresa: e.value.obligaciones_empresa,
+                        proposito: e.value.proposito,
+                        direccion_fiscal: e.value.direccion_fiscal,
+                        fecha_consignacion: e.value.fecha_consignacion,
+                        clausulas: e.value.clausulas,
+                        condicion_propiedad: e.value.condicion_propiedad,
+                      },
+                      cliente: resArr[1].data[0],
+                      inmueble: resArr[0].data[0],
+                      id_solicitud: e.value.id_solicitud,
+                      modo_contrato: {
+                        ...resArr[2].data[0],
+                        tipo: e.value.tipo,
+                      },
+                    });
                   })
                   .catch((err) => {
                     console.log(err);

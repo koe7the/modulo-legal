@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Consulta } from "../components/Consulta";
 import Select from "react-select";
 import api_ui from "../api_ui";
 import axios from "axios";
+
 import "../styles/vista2.css";
 
-export default function View2() {
+function View2() {
   const [contratos, setContratos] = useState([]);
   const [contrato, setContrato] = useState({});
   const [cliente, setCliente] = useState({});
@@ -16,10 +16,13 @@ export default function View2() {
     axios
       .get(`${api_ui}/contratos`)
       .then((result) => {
-        result.data.forEach((contrato) => {
+        const contratosArr = result.data.reduce((accumulator, contrato) => {
           let cuerpo = { label: contrato.id, value: contrato };
-          setContratos([...contratos, cuerpo]);
-        });
+          accumulator.push(cuerpo);
+          return accumulator;
+        }, []);
+
+        setContratos(contratosArr);
       })
       .catch((err) => {
         console.log(err);
@@ -37,6 +40,41 @@ export default function View2() {
       });
   };
 
+  const getFormattedDate = () => {
+    if (contrato.fecha_consignacion) {
+      const date = new Date(contrato.fecha_consignacion);
+      const dia = date.getDate();
+      const mes = date.getMonth() + 1;
+      const ano = date.getFullYear();
+
+      return `${dia}/${mes}/${ano}`;
+    }
+  };
+
+  /* funcion para eliminar/retractar */
+
+  const sendRetract = (e) => {
+    if (contrato.id) {
+      const suceso = e.target.innerHTML;
+
+      axios
+        .put(`${api_ui}/contratos/ree`, { ree: true, id: contrato.id })
+        .then((res) => {
+          alert(
+            `La operacion ${suceso} el contrato ${contrato.id} ha sido exitosa`
+          );
+          setContrato({});
+          setCliente({});
+          getContratos();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      alert("Debe seleccionar primero un contrato");
+    }
+  };
+
   useEffect(() => {
     getContratos();
   }, []);
@@ -47,6 +85,7 @@ export default function View2() {
       <div className="filtro-div">
         <Select
           options={contratos}
+          value={contrato || null}
           isSearchable
           isClearable
           placeholder="Buscar estado de contrato"
@@ -74,21 +113,34 @@ export default function View2() {
           <tr>
             <td>{contrato.id}</td>
             <td>{cliente.nombres}</td>
-            <td>{contrato.fecha_consignacion}</td>
+            <td>{getFormattedDate()}</td>
           </tr>
         </tbody>
       </table>
 
-      <button className="boton">Retractar </button>
+      <button onClick={sendRetract} className="boton">
+        Retractar{" "}
+      </button>
       <br />
       {/* eliminar no elimina, simplemente deshabilita el contrato a las vistas, pero queda en record */}
-      <button className="boton">Eliminar </button>
+      <button onClick={sendRetract} className="boton">
+        Eliminar{" "}
+      </button>
       <br />
-      <button className="boton">Imprimir</button>
-
-      <Consulta />
+      <button
+        className="boton"
+        onClick={() => {
+          alert(
+            `El contrato ${contrato.id} ha sido situado en la cola de impresion`
+          );
+        }}
+      >
+        Imprimir
+      </button>
 
       <Footer />
     </>
   );
 }
+
+export default View2;

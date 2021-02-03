@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { withRouter, useHistory } from "react-router-dom";
 /* componentes base */
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -13,7 +14,7 @@ import "../styles/vista1.css";
   -la vista de refinanciamiento cuando se activa el proceso, la vista redirecciona a la vista de actualizacion de contrato con la info del contrato ya cargada para solo cambiar las condiciones de pago del credito renovado, esto se validaria en un useEffect para que identifique si la vista esta siendo cargada mediante un redireccionamiento o una carga normal, y dependiendo de que setearia la data en los estados.
 
 
-  -TODO: falta la funcionalidad de acutualizar, "eliminar", retractar y embargar los contratos. 
+  -TODO: falta la funcionalidad de acutualizar y embargar los contratos. 
 
   TODO: TODO: TODO: TODO: 
 */
@@ -34,14 +35,47 @@ export default function View1() {
       value: "credito",
     },
   ];
-
-  //seleccionado o no el select de modo de contrato
-  const [seleccionado, setSeleccionado] = useState(false);
-
+  const history = useHistory();
   /* estado del formulario del contrato */
   const [contratoInfo, setContratoInfo] = useState({
+    id_solicitud: 0,
+    cliente: {
+      nombres: "",
+      apellidos: "",
+      cedula: 0,
+      correo_electronico: "",
+      cuenta_bancaria: 0,
+      direccion_fiscal: "",
+      fecha_nacimiento: "",
+      genero: "",
+      id: 0,
+      numero_contacto: 0,
+      rif: "",
+      sueldo: 0,
+    },
+    inmueble: {
+      codigo_postal: 0,
+      descripcion: "",
+      direccion: "",
+      id: 0,
+      tipo: "",
+    },
+    legal: {
+      clausulas: "",
+      condicion_propiedad: "",
+      derechos_cliente: "",
+      derechos_empresa: "",
+      direccion_fiscal: "",
+      fecha_consignacion: "",
+      obligaciones_cliente: "",
+      obligaciones_empresa: "",
+      proposito: "",
+    },
     modo_contrato: {
+      id: 0,
+      id_contrato: 0,
       tipo: "contado",
+      tipo_persona: "",
     },
   });
 
@@ -61,8 +95,11 @@ export default function View1() {
         const [resContratos, resSolicitudes] = responseArr;
 
         const contratoOpciones = resContratos.data.reduce(
-          (accumulator, contrato) => {
-            const cuerpo = { label: contrato.id, value: contrato };
+          (accumulator, element) => {
+            const cuerpo = {
+              label: element.id,
+              value: element,
+            };
             accumulator.push(cuerpo);
             return accumulator;
           },
@@ -92,15 +129,31 @@ export default function View1() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(contratoInfo);
-    axios
-      .post(`${api_ui}/contratos/registro`, contratoInfo)
-      .then((result) => {
-        alert(`contrato ${result.data.insertId} exitosamente registrado`);
-      })
-      .catch((err) => {
-        alert("hubo un error");
-        console.log(err.response);
-      });
+    if (mensaje === "Actualizar contrato") {
+      axios
+        .put(`${api_ui}/contratos/actualizacion`, contratoInfo)
+        .then((res) => {
+          console.log(res);
+          alert(`contrato ${contratoInfo.id} perfectamente actualizado`);
+          history.push("seguimiento");
+        })
+        .catch((err) => {
+          alert("hubo un error");
+          console.log(err.response);
+        });
+    } else {
+      axios
+        .post(`${api_ui}/contratos/registro`, contratoInfo)
+        .then((result) => {
+          console.log(result);
+          alert(`contrato ${result.data.insertId} exitosamente registrado`);
+          history.push("seguimiento");
+        })
+        .catch((err) => {
+          alert("hubo un error");
+          console.log(err.response);
+        });
+    }
   };
 
   useEffect(() => {
@@ -124,11 +177,9 @@ export default function View1() {
       <ContratoForm /* formulario de contrato */
         contratoInfo={contratoInfo}
         modos_contrato={modos_contrato}
-        seleccionado={seleccionado}
         mensaje={mensaje} /* mensaje de registro o actualizacion */
         handleSubmit={handleSubmit}
         setContratoInfo={setContratoInfo}
-        setSeleccionado={setSeleccionado}
       />
       <button
         onClick={() => {
@@ -136,6 +187,13 @@ export default function View1() {
         }}
       >
         paver
+      </button>
+      <button
+        onClick={() => {
+          console.log(contratos);
+        }}
+      >
+        para ver los contratos
       </button>
 
       <Footer />
