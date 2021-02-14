@@ -58,7 +58,7 @@ function ContratoForm(props) {
             <h2 className="form-section">Información del comprador</h2>
             <div className="form-input">
               <div className="cliente-output">
-                {cliente !== null ? (
+                {cliente.id === 0 ? null : (
                   <ul>
                     <li>
                       <b>ID:</b> {cliente.id}
@@ -97,7 +97,7 @@ function ContratoForm(props) {
                       <b>Sueldo:</b> {cliente.sueldo} Bfs
                     </li>
                   </ul>
-                ) : null}
+                )}
               </div>
             </div>
           </div>
@@ -106,7 +106,7 @@ function ContratoForm(props) {
             <h2 className="form-section"> Información de la propiedad</h2>
             <div className="form-input">
               <div className="cliente-output">
-                {inmueble !== null ? (
+                {inmueble.id === 0 ? null : (
                   <ul>
                     <li>
                       <b>ID propiedad:</b> {inmueble.id}
@@ -121,7 +121,7 @@ function ContratoForm(props) {
                       <b>Descripcion:</b> {inmueble.descripcion}{" "}
                     </li>
                   </ul>
-                ) : null}
+                )}
               </div>
             </div>
           </div>
@@ -259,7 +259,7 @@ function ContratoForm(props) {
                 <div className="form-input">
                   <label>Monto de cuotas</label>
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Monto de cuotas"
                     name="monto_cuotas"
                     value={modo.monto_cuotas}
@@ -316,6 +316,7 @@ function ContratoForm(props) {
           {/* informacion legal */}
           <div className="col-6">
             <h2 className="form-section">Información legal y clausulas</h2>
+
             <div>
               <div className="form-input">
                 <label>Direccion fiscal</label>
@@ -412,7 +413,7 @@ function ContratoForm(props) {
         </div>
         {/* boton submit */}
         <button
-          style={{ marginTop: "1rem", fontSize: "1.3rem" }}
+          style={{ marginTop: "2rem", fontSize: "1.3rem" }}
           type="submit"
           className="boton"
         >

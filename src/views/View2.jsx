@@ -16,6 +16,7 @@ function View2() {
     axios
       .get(`${api_ui}/contratos`)
       .then((result) => {
+        console.log(result.data);
         const contratosArr = result.data.reduce((accumulator, contrato) => {
           let cuerpo = { label: contrato.id, value: contrato };
           accumulator.push(cuerpo);
@@ -85,7 +86,6 @@ function View2() {
       <div className="filtro-div">
         <Select
           options={contratos}
-          value={contrato || null}
           isSearchable
           isClearable
           placeholder="Buscar estado de contrato"
@@ -105,16 +105,22 @@ function View2() {
         <thead>
           <tr>
             <th>ID Contrato</th>
+            <th>ID Cliente</th>
             <th>Cliente</th>
             <th>Fecha de elaboración</th>
+            <th>Tipo</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>{contrato.id}</td>
-            <td>{cliente.nombres}</td>
-            <td>{getFormattedDate()}</td>
-          </tr>
+          {!contrato.id ? null : (
+            <tr>
+              <td>{contrato.id}</td>
+              <td>{contrato.id_cliente}</td>
+              <td>{cliente.nombres}</td>
+              <td>{getFormattedDate()}</td>
+              <td>{contrato.tipo}</td>
+            </tr>
+          )}
         </tbody>
       </table>
 
